@@ -1,20 +1,19 @@
 export default class Board {
-    constructor(boardElement) {
-        this.boardElement = boardElement;
+    static SIZE = 4;
+    static CELLS = Board.SIZE * Board.SIZE;
+
+    constructor(board) {
+        this.board = board;
         this.cells = [];
-        for (let i = 0; i < 16; i++) {
+        for (let i = 0; i < Board.CELLS; i++) {
             const cell = document.createElement('div');
             cell.className = 'cell';
-            boardElement.append(cell);
+            this.board.append(cell);
             this.cells.push(cell);
         }
     }
 
-    getRandomCell() {
-        return this.cells[Math.floor(Math.random() * 16)];
-    }
-
-    getCells() {
-        return this.cells;
+    random() {
+        return this.cells[Math.floor(Math.random() * Board.CELLS)];
     }
 }

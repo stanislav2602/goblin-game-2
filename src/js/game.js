@@ -1,4 +1,7 @@
 export default class Game {
+    static MAX_MISSED = 5;
+    static INTERVAL = 1000;
+
     constructor(board, goblin, scoreEl, missedEl, msgEl) {
         this.board = board;
         this.goblin = goblin;
@@ -13,10 +16,10 @@ export default class Game {
     start() {
         this.score = 0;
         this.missed = 0;
-        this.missedEl.textContent = '';
         this.update();
+        this.msgEl.textContent = '';
         this.move();
-        this.board.boardElement.onclick = (e) => {
+        this.board.board.onclick = (e) => {
             const cell = e.target.closest('.cell');
             if (cell && this.goblin.cell === cell) {
                 this.score++;
@@ -26,25 +29,23 @@ export default class Game {
                 this.move();
             }
         };
-
     }
 
     move() {
-        let newCell;
-        do {
-            newCell = this.board.getRandomCell();
-        } while (newCell === this.goblin.cell);
-
-        this.goblin.show(newCell);
-
+        let cell;
+        do cell = this.board.random();
+        while (cell === this.goblin.cell);
+        
+        this.goblin.show(cell);
+        
         this.timer = setTimeout(() => {
             if (this.goblin.cell) {
                 this.missed++;
                 this.update();
                 this.goblin.hide();
-                this.missed < 5 ? this.move() : this.end();
+                this.missed < Game.MAX_MISSED ? this.move() : this.end();
             }
-        }, 1000);
+        }, Game.INTERVAL);
     }
 
     update() {
@@ -55,6 +56,6 @@ export default class Game {
     end() {
         this.goblin.hide();
         clearTimeout(this.timer);
-        this.msgEl.textContent = `Игра окончена. Счет: ${this.score}`;
+        this.msgEl.textContent = `Игра окончена. Счёт: ${this.score}`;
     }
 }

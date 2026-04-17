@@ -1,17 +1,17 @@
 export default class Goblin {
-    constructor(imgSrc) {
-        this.element = document.createElement('img');
-        this.element.src = imgSrc;
+    constructor(img) {
+        this.el = document.createElement('img');
+        this.el.src = img;
         this.cell = null;
     }
 
     show(cell) {
         this.cell = cell;
-        cell.append(this.element);
+        cell.append(this.el);
     }
 
     hide() {
-        if (this.cell) this.element.remove();
+        if (this.cell) this.el.remove();
         this.cell = null;
     }
 }
