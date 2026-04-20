@@ -13,7 +13,12 @@ export default class Board {
         }
     }
 
-    random() {
-        return this.cells[Math.floor(Math.random() * Board.CELLS)];
+    random(excludeCell = null) {
+        if (!excludeCell) {
+            return this.cells[Math.floor(Math.random() * Board.CELLS)];
+        }
+        
+        const availableCells = this.cells.filter(cell => cell !== excludeCell);
+        return availableCells[Math.floor(Math.random() * availableCells.length)];
     }
 }

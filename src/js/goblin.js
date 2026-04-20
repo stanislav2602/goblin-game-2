@@ -2,6 +2,7 @@ export default class Goblin {
     constructor(img) {
         this.el = document.createElement('img');
         this.el.src = img;
+        this.el.alt = 'goblin';
         this.cell = null;
     }
 

@@ -32,11 +32,8 @@ export default class Game {
     }
 
     move() {
-        let cell;
-        do cell = this.board.random();
-        while (cell === this.goblin.cell);
-        
-        this.goblin.show(cell);
+        const newCell = this.board.random(this.goblin.cell);
+        this.goblin.show(newCell);
         
         this.timer = setTimeout(() => {
             if (this.goblin.cell) {
