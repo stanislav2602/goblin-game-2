@@ -24,6 +24,8 @@ export default class Game {
             clearTimeout(this.timer);
             this.timer = null;
         }
+  
+        this.goblin.hide();
         
         this.score = 0;
         this.missed = 0;
@@ -38,6 +40,8 @@ export default class Game {
             if (cell && this.goblin.cell === cell) {
                 this.score++;
                 this.update();
+                
+                const previousCell = this.goblin.cell;
                 this.goblin.hide();
                 
                 if (this.timer) {
@@ -45,7 +49,7 @@ export default class Game {
                     this.timer = null;
                 }
                 
-                this.move();
+                this.move(previousCell);
             }
         };
         
@@ -53,7 +57,7 @@ export default class Game {
         this.move();
     }
 
-    move() {
+    move(previousCell = null) {
         if (!this.active) return;
         
         if (this.timer) {
@@ -61,7 +65,8 @@ export default class Game {
             this.timer = null;
         }
         
-        const newCell = this.board.random(this.goblin.cell);
+        const excludeCell = previousCell !== null ? previousCell : this.goblin.cell;
+        const newCell = this.board.random(excludeCell);
         this.goblin.show(newCell);
         
         this.timer = setTimeout(() => {
@@ -69,10 +74,12 @@ export default class Game {
             
             this.missed++;
             this.update();
+            
+            const currentCell = this.goblin.cell;
             this.goblin.hide();
             
             if (this.missed < Game.MAX_MISSED) {
-                this.move();
+                this.move(currentCell);
             } else {
                 this.end();
             }
