@@ -14,7 +14,7 @@ export default class Board {
     }
 
     random(excludeCell = null) {
-        if (!excludeCell) {
+        if (excludeCell == null) {
             return this.cells[Math.floor(Math.random() * Board.CELLS)];
         }
         

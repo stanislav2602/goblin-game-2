@@ -11,36 +11,70 @@ export default class Game {
         this.score = 0;
         this.missed = 0;
         this.timer = null;
+        this.active = false;
+        this.clickHandler = null;
     }
 
     start() {
+        if (this.clickHandler) {
+            this.board.board.removeEventListener('click', this.clickHandler);
+            this.clickHandler = null;
+        }
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+        
         this.score = 0;
         this.missed = 0;
+        this.active = true;
         this.update();
         this.msgEl.textContent = '';
-        this.move();
-        this.board.board.onclick = (e) => {
+        
+        this.clickHandler = (e) => {
+            if (!this.active) return;
+            
             const cell = e.target.closest('.cell');
             if (cell && this.goblin.cell === cell) {
                 this.score++;
                 this.update();
                 this.goblin.hide();
-                clearTimeout(this.timer);
+                
+                if (this.timer) {
+                    clearTimeout(this.timer);
+                    this.timer = null;
+                }
+                
                 this.move();
             }
         };
+        
+        this.board.board.addEventListener('click', this.clickHandler);
+        this.move();
     }
 
     move() {
-        const newCell = this.board.random(this.goblin.cell || null);
+        if (!this.active) return;
+        
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+        
+        const newCell = this.board.random(this.goblin.cell);
         this.goblin.show(newCell);
         
         this.timer = setTimeout(() => {
-            if (this.goblin.cell) {
-                this.missed++;
-                this.update();
-                this.goblin.hide();
-                this.missed < Game.MAX_MISSED ? this.move() : this.end();
+            if (!this.active) return;
+            
+            this.missed++;
+            this.update();
+            this.goblin.hide();
+            
+            if (this.missed < Game.MAX_MISSED) {
+                this.move();
+            } else {
+                this.end();
             }
         }, Game.INTERVAL);
     }
@@ -51,8 +85,19 @@ export default class Game {
     }
 
     end() {
+        this.active = false;
         this.goblin.hide();
-        clearTimeout(this.timer);
+        
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+        
+        if (this.clickHandler) {
+            this.board.board.removeEventListener('click', this.clickHandler);
+            this.clickHandler = null;
+        }
+        
         this.msgEl.textContent = `Игра окончена. Счёт: ${this.score}`;
     }
 }
