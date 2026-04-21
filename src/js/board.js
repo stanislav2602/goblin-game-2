@@ -18,7 +18,13 @@ export default class Board {
             return this.cells[Math.floor(Math.random() * Board.CELLS)];
         }
         
-        const availableCells = this.cells.filter(cell => cell !== excludeCell);
-        return availableCells[Math.floor(Math.random() * availableCells.length)];
+        const excludeIndex = this.cells.indexOf(excludeCell);
+        let randomIndex;
+        
+        do {
+            randomIndex = Math.floor(Math.random() * Board.CELLS);
+        } while (randomIndex === excludeIndex);
+        
+        return this.cells[randomIndex];
     }
 }
